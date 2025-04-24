@@ -1,0 +1,15 @@
+# Backend
+/backend/target
+/backend/.idea
+*.log
+
+
+# Frontend
+/frontend/node_modules
+/frontend/.env
+
+
+# Global
+.DS_Store
+*.class
+*.jar
