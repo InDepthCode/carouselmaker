@@ -7,6 +7,8 @@ import com.linkedinCarausels.service.CarouselService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,5 +36,14 @@ public class CarouselController {
     @GetMapping("/getAll")
     public ResponseEntity<List<SlideSet>> getAllCarousels(){
         return ResponseEntity.ok(carouselService.getAllCarousels());
+    }
+
+    @GetMapping("/export/pdf/{id}")
+    public ResponseEntity<byte[]> exportPdf(@PathVariable long id) throws java.io.IOException{
+        File pdf = carouselService.exportCarouselAsPdf(id);
+
+        byte[] fileBytes = java.nio.file.Files.readAllBytes(pdf.toPath());
+
+        return ResponseEntity.ok().header("Content-Disposition", "attachment; filename=" + pdf.getName()).header("Content-Type","application/pdf").body(fileBytes);
     }
 }

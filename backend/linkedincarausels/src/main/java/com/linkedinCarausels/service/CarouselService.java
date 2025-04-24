@@ -6,6 +6,7 @@ import com.linkedinCarausels.entity.SlideSet;
 import com.linkedinCarausels.repository.SlideSetRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,9 +17,11 @@ public class CarouselService {
 
 
     private final SlideSetRepository slideSetRepository;
+    private final PdfExportService pdfExportService;
 
-    public CarouselService(SlideSetRepository slideSetRepository) {
+    public CarouselService(SlideSetRepository slideSetRepository, PdfExportService pdfExportService) {
         this.slideSetRepository = slideSetRepository;
+        this.pdfExportService = pdfExportService;
     }
 
     public List<String> generateSlides(String content){
@@ -43,5 +46,12 @@ public class CarouselService {
 
     public List<SlideSet> getAllCarousels(){
         return slideSetRepository.findAll();
+    }
+
+    public File exportCarouselAsPdf( long id) throws java.io.IOException{
+        SlideSet slideSet = slideSetRepository.findById(id).orElseThrow(() -> new RuntimeException("Carousel Not Fround"));
+
+        return pdfExportService.generatePdfFromSlide(slideSet.getSlides(), slideSet.getTitle());
+
     }
 }
